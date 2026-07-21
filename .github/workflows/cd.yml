@@ -1,7 +1,7 @@
 name: cd
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -14,11 +14,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Run baseline script
         run: |
           chmod +x ./src/*.sh ./main.sh
-          ./main.sh asyncawake.studio ./programs/asyncawake.studio
+          ./main.sh asyncawake.studio ./organisations/asyncawake.studio
 
       - name: Commit and push changes
         run: |
@@ -28,6 +30,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: update domain info"
+            git commit -m "chore: refresh domain info"
             git push
           fi
