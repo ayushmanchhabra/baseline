@@ -56,4 +56,3 @@ fi
 echo
 echo "DNS results written to $2"
 echo
-
