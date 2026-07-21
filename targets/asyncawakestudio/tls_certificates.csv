@@ -1,0 +1,7 @@
+URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry
+api.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
+asyncawake.studio,CN = asyncawake.studio,C = US; O = Let's Encrypt; CN = YR1,Jun 22 06:59:54 2026 GMT,Sep 20 06:59:53 2026 GMT,59
+sftp.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
+todo.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
+verify.asyncawake.studio,CN = verify.asyncawake.studio,C = US; O = Let's Encrypt; CN = R13,May 26 18:16:20 2026 GMT,Aug 24 18:16:19 2026 GMT,33
+zk.asyncawake.studio,CN = *.github.io,C = US; O = Let's Encrypt; CN = YR2,Jun 4 23:26:07 2026 GMT,Sep 2 23:26:06 2026 GMT,42
