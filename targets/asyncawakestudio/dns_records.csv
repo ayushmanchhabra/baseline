@@ -1,23 +1,18 @@
 URI,TTL,DNS Record,DNS Value
-asyncawake.studio,1799,A,185.199.110.153
-asyncawake.studio,1799,A,185.199.109.153
-asyncawake.studio,1799,A,185.199.111.153
+asyncawake.studio,1798,MX,10 mail.protonmail.ch.
+asyncawake.studio,1798,MX,20 mailsec.protonmail.ch.
 asyncawake.studio,1799,A,185.199.108.153
-asyncawake.studio,1799,MX,10 mail.protonmail.ch.
-asyncawake.studio,1799,MX,20 mailsec.protonmail.ch.
-asyncawake.studio,1799,TXT,"v=spf1 include:_spf.protonmail.ch ~all"
+asyncawake.studio,1799,A,185.199.109.153
+asyncawake.studio,1799,A,185.199.110.153
+asyncawake.studio,1799,A,185.199.111.153
+asyncawake.studio,1799,NS,dns1.registrar-servers.com.
+asyncawake.studio,1799,NS,dns2.registrar-servers.com.
 asyncawake.studio,1799,TXT,"protonmail-verification=8bcb5897afd53bd6b1ef0fa0aec92c49874c50bc"
-asyncawake.studio,1800,NS,dns1.registrar-servers.com.
-asyncawake.studio,1800,NS,dns2.registrar-servers.com.
+asyncawake.studio,1799,TXT,"v=spf1 include:_spf.protonmail.ch ~all"
 asyncawake.studio,1800,SOA,dns1.registrar-servers.com. hostmaster.registrar-servers.com. 1782062458 43200 3600 604800 3601
 verify.asyncawake.studio,1799,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,300,A,216.150.16.193
+verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
 verify.asyncawake.studio,300,A,216.150.1.193
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
-verify.asyncawake.studio,299,CNAME,55d103eefacb975a.vercel-dns-017.com.
+verify.asyncawake.studio,300,A,216.150.16.193
 zk.asyncawake.studio,1799,A,185.199.110.153
 zk.asyncawake.studio,1799,A,185.199.111.153
