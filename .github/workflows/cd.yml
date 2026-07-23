@@ -26,6 +26,8 @@ jobs:
           sudo apt install openssl
           chmod +x ./src/*.sh ./main.sh
           ./main.sh asyncawake.studio ./targets/asyncawakestudio
+          ./main.sh ayushmanchhabra.com ./targets/ayushmanchhabra
+          ./main.sh vaultfol.io ./targets/vaultfolio
 
       - name: Commit and push changes
         run: |
