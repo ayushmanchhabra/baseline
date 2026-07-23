@@ -1,7 +1,27 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-mkdir -p $2
+usage() {
+  echo "Usage: $0 <domain|target> <output_dir>" >&2
+}
 
-./src/sub.sh $1 $2/subdomains.txt
-./src/dns.sh $2/subdomains.txt $2/dns_records.csv
-./src/crt.sh $2/subdomains.txt $2/tls_certificates.csv
+if [ "$#" -ne 2 ]; then
+  usage
+  exit 1
+fi
+
+input_target="${1}"
+output_dir="${2}"
+
+if [ -z "$input_target" ] || [ -z "$output_dir" ]; then
+  usage
+  exit 1
+fi
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+mkdir -p -- "$output_dir"
+
+"$script_dir/src/sub.sh" "$input_target" "$output_dir/subdomains.txt"
+"$script_dir/src/dns.sh" "$output_dir/subdomains.txt" "$output_dir/dns_records.csv"
+"$script_dir/src/crt.sh" "$output_dir/subdomains.txt" "$output_dir/tls_certificates.csv"

@@ -95,6 +95,8 @@ fi
   done
 } > "$2"
 
+sort -u "$2" -o "$2"
+
 echo
 echo "Certificate info written to $2"
 echo

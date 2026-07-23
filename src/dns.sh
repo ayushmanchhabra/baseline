@@ -53,6 +53,8 @@ fi
   done
 } > "$2"
 
+sort -u "$2" -o "$2"
+
 echo
 echo "DNS results written to $2"
 echo
