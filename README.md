@@ -1,6 +1,6 @@
 # Baseline
 
-
+Get subdomain, DNS and certificate info and map the attack surface.
 
 ## Requirements
 
