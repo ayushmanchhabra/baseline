@@ -1,11 +1,11 @@
 URI,TTL,DNS Record,DNS Value
 vaultfol.io,1799,A,216.198.79.1
+vaultfol.io,1799,NS,dns1.registrar-servers.com.
+vaultfol.io,1799,NS,dns2.registrar-servers.com.
 vaultfol.io,1800,MX,10 eforward1.registrar-servers.com.
 vaultfol.io,1800,MX,10 eforward2.registrar-servers.com.
 vaultfol.io,1800,MX,10 eforward3.registrar-servers.com.
 vaultfol.io,1800,MX,15 eforward4.registrar-servers.com.
 vaultfol.io,1800,MX,20 eforward5.registrar-servers.com.
-vaultfol.io,1800,NS,dns1.registrar-servers.com.
-vaultfol.io,1800,NS,dns2.registrar-servers.com.
 vaultfol.io,1800,SOA,dns1.registrar-servers.com. hostmaster.registrar-servers.com. 1753624968 43200 3600 604800 3601
 vaultfol.io,1800,TXT,"v=spf1 include:spf.efwd.registrar-servers.com ~all"

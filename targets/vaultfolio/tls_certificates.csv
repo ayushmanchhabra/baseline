@@ -1,2 +1,2 @@
 URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry
-vaultfol.io,CN = vaultfol.io,C = US; O = Let's Encrypt; CN = R12,May 28 10:33:01 2026 GMT,Aug 26 10:33:00 2026 GMT,34
+vaultfol.io,CN = vaultfol.io,C = US; O = Let's Encrypt; CN = R12,May 28 10:33:01 2026 GMT,Aug 26 10:33:00 2026 GMT,33
