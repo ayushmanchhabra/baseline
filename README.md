@@ -48,10 +48,9 @@ This section documents how to use each script in the repository directly.
 ### 1. Main orchestration entrypoint
 
 - Target script: main.sh
-- Behavior: Runs the full workflow for a single hostname:
-  - subdomain discovery
-  - DNS record collection
-  - TLS certificate collection
+- Behavior: Runs the full workflow for a single hostname: subdomain discovery,
+  DNS record collection, TLS certificate collection.
+
 - Invocation:
 
   ```bash
@@ -64,16 +63,16 @@ This section documents how to use each script in the repository directly.
   ./main.sh example.com ./out
   ```
 
-- Notes:
-  - The target must be a single hostname such as example.com or
-    api.example.com.
-  - The output directory is created automatically if it does not exist.
+- Notes: The target must be a single hostname such as example.com or
+  api.example.com. The output directory is created automatically if it does
+  not exist.
 
 ### 2. Subdomain discovery
 
 - Target script: src/sub.sh
 - Behavior: Runs subfinder against a domain and writes a unique list of
   discovered subdomains.
+
 - Invocation:
 
   ```bash
@@ -93,6 +92,7 @@ This section documents how to use each script in the repository directly.
 - Target script: src/dns.sh
 - Behavior: Queries common DNS record types for a hostname or a file of
   hostnames and writes CSV results.
+
 - Invocation:
 
   ```bash
@@ -106,17 +106,14 @@ This section documents how to use each script in the repository directly.
   ./src/dns.sh ./subdomains.txt ./out/dns_records.csv
   ```
 
-- Output: A CSV with columns:
-  - URI
-  - TTL
-  - DNS Record
-  - DNS Value
+- Output: A CSV with columns: URI, TTL, DNS Record, DNS Value.
 
 ### 4. TLS certificate collection
 
 - Target script: src/crt.sh
 - Behavior: Retrieves certificate details for one host or a list of hosts and
   writes them to CSV.
+
 - Invocation:
 
   ```bash
@@ -130,19 +127,15 @@ This section documents how to use each script in the repository directly.
   ./src/crt.sh ./subdomains.txt ./out/tls_certificates.csv
   ```
 
-- Output: A CSV with columns:
-  - URI
-  - Cert Subject
-  - Cert Issuer
-  - Not Before
-  - Not After
-  - Days Until Expiry
+- Output: A CSV with columns: URI, Cert Subject, Cert Issuer, Not Before,
+  Not After, Days Until Expiry.
 
 ### 5. HTTP method and header probing
 
 - Target script: src/403.sh
 - Behavior: Tests common HTTP methods and headers against a URL and writes
   the observed responses to CSV.
+
 - Invocation:
 
   ```bash
@@ -155,18 +148,14 @@ This section documents how to use each script in the repository directly.
   ./src/403.sh -h https://example.com -o ./http_methods.csv
   ```
 
-- Output: A CSV with columns:
-  - URL
-  - Category
-  - Payload
-  - Status Code
-  - Size
+- Output: A CSV with columns: URL, Category, Payload, Status Code, Size.
 
 ### 6. TCP port scanning
 
 - Target script: src/port.sh
 - Behavior: Scans one or more TCP ports on a raw IPv4 address and writes the
   result to CSV.
+
 - Invocation:
 
   ```bash
@@ -179,20 +168,16 @@ This section documents how to use each script in the repository directly.
   ./src/port.sh -h 8.8.8.8 -p 80,443,445 -o ./out/ports.csv -t 1
   ```
 
-- Output: A CSV with columns:
-  - ip
-  - port
-  - status
-- Notes:
-  - Only raw IPv4 addresses are accepted.
-  - Ports may be provided as a single port, a comma-separated list, or a
-    range.
+- Output: A CSV with columns: ip, port, status.
+- Notes: Only raw IPv4 addresses are accepted. Ports may be provided as a
+  single port, a comma-separated list, or a range.
 
 ### 7. Service name lookup
 
 - Target script: src/srv.sh
 - Behavior: Checks TCP ports on a raw IPv4 address and reports the matching
   service name when available.
+
 - Invocation:
 
   ```bash
@@ -205,13 +190,9 @@ This section documents how to use each script in the repository directly.
   ./src/srv.sh -h 8.8.8.8 -p 443 -o ./out/services.csv -t 0.5
   ```
 
-- Output: A CSV with columns:
-  - ip
-  - port
-  - service
-- Notes:
-  - Only raw IPv4 addresses are accepted.
-  - Service names are resolved from system service data when available.
+- Output: A CSV with columns: ip, port, service.
+- Notes: Only raw IPv4 addresses are accepted. Service names are resolved
+  from system service data when available.
 
 ### Validation
 

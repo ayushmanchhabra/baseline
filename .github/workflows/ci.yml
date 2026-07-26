@@ -22,6 +22,8 @@ jobs:
       - name: Install packages
         run: |
             sudo apt install markdownlint
+      - name: Lint markdown
+        run: mdl ./README.md
       - name: Lint shell code
         run: shellcheck ./**/*.sh
       - name: Run regression checks
