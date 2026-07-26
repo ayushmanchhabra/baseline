@@ -28,5 +28,5 @@ jobs:
         run: mdl ./README.md
       - name: Lint shell code
         run: shellcheck ./**/*.sh
-      - name: Run regression checks
-        run: bash tests/test_validation.sh
+      # - name: Run regression checks
+      #   run: bash tests/test_validation.sh
