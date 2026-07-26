@@ -51,7 +51,7 @@ validate_domain() {
   [[ "$value" != http://* && "$value" != https://* ]] || return 1
   [[ "$value" != */* ]] || return 1
   [[ "$value" != *:* ]] || return 1
-  [[ "$value" =~ ^([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])+$ ]] || return 1
+  [[ "$value" =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])+$ ]] || return 1
 }
 
 case "${1:-}" in

@@ -1,9 +1,0 @@
-autoconfig.indfragbio.com
-autodiscover.indfragbio.com
-cpanel.indfragbio.com
-cpcalendars.indfragbio.com
-cpcontacts.indfragbio.com
-indfragbio.com
-mail.indfragbio.com
-webdisk.indfragbio.com
-webmail.indfragbio.com

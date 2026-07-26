@@ -66,7 +66,7 @@ validate_host() {
   [[ "$value" != *" "* ]] || return 1
   [[ "$value" != http://* && "$value" != https://* ]] || return 1
   [[ "$value" != */* ]] || return 1
-  [[ "$value" =~ ^([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])+$ ]] || [[ "$value" == "localhost" ]]
+  [[ "$value" =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])+$ ]] || [[ "$value" == "localhost" ]]
 }
 
 load_inputs() {
