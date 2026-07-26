@@ -1,60 +1,119 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# dns.sh - Query common DNS record types for a host or list of hosts.
+#
+# Purpose:
+#   Accepts either a single hostname or a file containing multiple hostnames and
+#   records the results of common DNS queries into a CSV file.
+#
+# Usage:
+#   ./dns.sh <url|subdomains.txt> <output.csv>
+#
+# Examples:
+#   ./dns.sh example.com ./dns_records.csv
+#   ./dns.sh ./subdomains.txt ./out/dns_records.csv
+#
+# Notes:
+#   - The script checks for malformed hosts and skips invalid entries gracefully.
+#   - Supported record types include A, AAAA, CNAME, MX, TXT, NS, and SOA.
+#
 
-if [ -z "$2" ]; then
+set -euo pipefail
+
+usage() {
   echo "Usage: $0 <url|subdomains.txt> <output.csv>" >&2
-  exit 1
-fi
-
-if [[ "$2" != *.csv ]]; then
-  echo "Error: output file must have a .csv extension" >&2
-  exit 1
-fi
-
-clean_uri() {
-  echo "$1" | sed -E 's#^[a-zA-Z]+://##' | sed -E 's#[:/].*$##' | sed 's/^www\.//'
 }
 
-# If $1 is a readable file, treat each non-empty line as a URI.
-# Otherwise, treat $1 itself as a single URI.
-# If $1 looks like a path to a file (contains a slash, or ends in .txt)
-# but doesn't actually exist, fail loudly instead of silently treating it as a domain.
-if [[ "$1" == *.txt || "$1" == */* ]] && [ ! -f "$1" ]; then
-  echo "Error: file not found: $1" >&2
+die() {
+  echo "Error: $*" >&2
   exit 1
-fi
+}
 
-if [ -f "$1" ]; then
-  echo "Reading URIs from file: $1" >&2
-  mapfile -t uris < <(tr -d '\r' < "$1" | grep -v '^[[:space:]]*$')
-  echo "Loaded ${#uris[@]} URI(s)" >&2
-  if [ "${#uris[@]}" -eq 0 ]; then
-    echo "Error: no URIs found in $1" >&2
-    exit 1
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
+}
+
+clean_uri() {
+  local value="${1,,}"
+  value="${value#*://}"
+  value="${value%%/*}"
+  value="${value%%\?*}"
+  value="${value%%#*}"
+  value="${value%:}"
+  value="${value#www.}"
+  echo "$value"
+}
+
+validate_host() {
+  local value="${1,,}"
+  value="${value%.}"
+
+  [[ -n "$value" ]] || return 1
+  [[ "$value" != *" "* ]] || return 1
+  [[ "$value" != http://* && "$value" != https://* ]] || return 1
+  [[ "$value" != */* ]] || return 1
+  [[ "$value" =~ ^([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])+$ ]] || [[ "$value" == "localhost" ]]
+}
+
+load_inputs() {
+  local input_path="$1"
+  if [[ "$input_path" == *.txt || "$input_path" == *.csv || "$input_path" == *.list || "$input_path" == */* ]]; then
+    [[ -f "$input_path" ]] || die "File not found: $input_path"
+    mapfile -t uris < <(sed '/^[[:space:]]*$/d; s/^[[:space:]]*//; s/[[:space:]]*$//' "$input_path")
+    [[ ${#uris[@]} -gt 0 ]] || die "No URIs found in $input_path"
+  else
+    uris=("$input_path")
   fi
-else
-  echo "Treating input as a single URI: $1" >&2
-  uris=("$1")
-fi
+}
+
+[[ $# -eq 2 ]] || { usage; exit 1; }
+
+input_path="${1}"
+output_file="${2}"
+
+[[ -n "$input_path" ]] || die "Input path cannot be empty"
+[[ "$output_file" == *.csv ]] || die "Output file must have a .csv extension"
+
+require_cmd dig
+
+output_dir="$(dirname -- "$output_file")"
+mkdir -p -- "$output_dir" || die "Unable to create output directory: $output_dir"
+
+declare -a uris=()
+load_inputs "$input_path"
+
+tmp_output="$(mktemp "${TMPDIR:-/tmp}/dns.XXXXXX")"
+trap 'rm -f -- "$tmp_output"' EXIT
 
 {
   echo "URI,TTL,DNS Record,DNS Value"
   for raw_uri in "${uris[@]}"; do
-    uri=$(clean_uri "$raw_uri")
+    uri="$(clean_uri "$raw_uri")"
+    if ! validate_host "$uri"; then
+      echo "$uri,N/A,ERROR,invalid target"
+      continue
+    fi
+
     for rtype in A AAAA CNAME MX TXT NS SOA; do
-      dig +noall +answer "$rtype" "$uri" | while read -r _ ttl _ rtype_col val; do
-        if [ -n "$val" ]; then
-          case "$val" in
-            *,*) echo "$uri,$ttl,$rtype_col,\"$val\"" ;;
-            *)   echo "$uri,$ttl,$rtype_col,$val" ;;
-          esac
-        fi
-      done
+      if dig_output=$(dig +time=3 +tries=1 +noall +answer "$rtype" "$uri" 2>/dev/null); then
+        while IFS= read -r line; do
+          [ -n "$line" ] || continue
+          read -r _ ttl _ rtype_col val <<< "$line"
+          if [ -n "$val" ]; then
+            case "$val" in
+              *,*) echo "$uri,$ttl,$rtype_col,\"$val\"" ;;
+              *)   echo "$uri,$ttl,$rtype_col,$val" ;;
+            esac
+          fi
+        done <<< "$dig_output"
+      fi
     done
   done
-} > "$2"
+} > "$tmp_output"
 
-sort -u "$2" -o "$2"
+{
+  head -n 1 "$tmp_output"
+  tail -n +2 "$tmp_output" | sort -u
+} > "$output_file"
 
-echo
-echo "DNS results written to $2"
-echo
+echo "DNS results written to $output_file"

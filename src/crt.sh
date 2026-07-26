@@ -1,102 +1,153 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# Usage:  ./certcheck.sh <url|subdomains.txt> <output.csv>
-#         SHORT=1 ./certcheck.sh hosts.txt out.csv    # subject/issuer reduced to CN only
+# crt.sh - Retrieve TLS certificate details for hosts and export them to CSV.
 #
-# DNs contain commas (C=US, O=..., CN=...). Those become semicolons so
-# `column -t -s, out.csv` keeps one row per host.
+# Purpose:
+#   Accepts either a single host or a file of hosts and collects certificate
+#   subject, issuer, validity dates, and days until expiry into a CSV report.
+#
+# Usage:
+#   ./crt.sh <url|subdomains.txt> <output.csv>
+#
+# Examples:
+#   ./crt.sh example.com ./tls_certificates.csv
+#   ./crt.sh ./subdomains.txt ./out/tls_certificates.csv
+#
+# Notes:
+#   - The script validates hostnames before attempting TLS connections.
+#   - Set SHORT=1 to reduce subject and issuer values to the CN component only.
+#
 
-if [ -z "$2" ]; then
+set -euo pipefail
+
+usage() {
   echo "Usage: $0 <url|subdomains.txt> <output.csv>" >&2
-  exit 1
-fi
-
-if [[ "$2" != *.csv ]]; then
-  echo "Error: output file must have a .csv extension" >&2
-  exit 1
-fi
-
-clean_uri() {
-  echo "$1" | sed -E 's#^[a-zA-Z]+://##' | sed -E 's#[:/].*$##'
 }
 
-# commas -> semicolons, double quotes -> single, whitespace squeezed and trimmed
+die() {
+  echo "Error: $*" >&2
+  exit 1
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
+}
+
+clean_uri() {
+  local value="${1,,}"
+  value="${value#*://}"
+  value="${value%%/*}"
+  value="${value%%\?*}"
+  value="${value%%#*}"
+  value="${value%:}"
+  value="${value#www.}"
+  echo "$value"
+}
+
 sanitize() {
   echo "$1" | sed 's/,/;/g' | sed 's/"/'"'"'/g' | tr -s ' ' | sed 's/^ *//; s/ *$//'
 }
 
-# pull just the CN out of a DN, fall back to the whole thing
 cn_only() {
   local cn
   cn=$(echo "$1" | grep -oP 'CN\s*=\s*\K[^,/]+' | head -1)
-  if [ -n "$cn" ]; then echo "$cn"; else echo "$1"; fi
+  if [ -n "$cn" ]; then
+    echo "$cn"
+  else
+    echo "$1"
+  fi
 }
 
-# Fail loudly if $1 looks like a file path but doesn't exist
-if [[ "$1" == *.txt || "$1" == *.csv || "$1" == *.list || "$1" == */* ]] && [ ! -f "$1" ]; then
-  echo "Error: file not found: $1" >&2
-  exit 1
-fi
+validate_host() {
+  local value="${1,,}"
+  value="${value%.}"
 
-if [ -f "$1" ]; then
-  echo "Reading URIs from file: $1" >&2
-  mapfile -t uris < <(tr -d '\r' < "$1" | grep -v '^[[:space:]]*$')
-  echo "Loaded ${#uris[@]} URI(s)" >&2
-  if [ "${#uris[@]}" -eq 0 ]; then
-    echo "Error: no URIs found in $1" >&2
-    exit 1
+  [[ -n "$value" ]] || return 1
+  [[ "$value" != *" "* ]] || return 1
+  [[ "$value" != http://* && "$value" != https://* ]] || return 1
+  [[ "$value" != */* ]] || return 1
+  [[ "$value" =~ ^([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])+$ ]] || [[ "$value" == "localhost" ]]
+}
+
+load_inputs() {
+  local input_path="$1"
+  if [[ "$input_path" == *.txt || "$input_path" == *.csv || "$input_path" == *.list || "$input_path" == */* ]]; then
+    [[ -f "$input_path" ]] || die "File not found: $input_path"
+    mapfile -t uris < <(sed '/^[[:space:]]*$/d; s/^[[:space:]]*//; s/[[:space:]]*$//' "$input_path")
+    [[ ${#uris[@]} -gt 0 ]] || die "No URIs found in $input_path"
+  else
+    uris=("$input_path")
   fi
-else
-  echo "Treating input as a single URI: $1" >&2
-  uris=("$1")
-fi
+}
+
+[[ $# -eq 2 ]] || { usage; exit 1; }
+
+input_path="${1}"
+output_file="${2}"
+
+[[ -n "$input_path" ]] || die "Input path cannot be empty"
+[[ "$output_file" == *.csv ]] || die "Output file must have a .csv extension"
+
+require_cmd openssl
+
+output_dir="$(dirname -- "$output_file")"
+mkdir -p -- "$output_dir" || die "Unable to create output directory: $output_dir"
+
+declare -a uris=()
+load_inputs "$input_path"
+
+tmp_output="$(mktemp "${TMPDIR:-/tmp}/certs.XXXXXX")"
+trap 'rm -f -- "$tmp_output"' EXIT
 
 {
   echo "URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry"
 
   for raw_uri in "${uris[@]}"; do
-    uri=$(clean_uri "$raw_uri")
+    uri="$(clean_uri "$raw_uri")"
+    if ! validate_host "$uri"; then
+      echo "$uri,N/A,N/A,N/A,N/A,N/A"
+      continue
+    fi
 
-    cert=$(echo | openssl s_client -connect "${uri}:443" -servername "$uri" 2>/dev/null \
-      | openssl x509 -noout -subject -issuer -dates 2>/dev/null)
+    if ! cert_output=$(echo | openssl s_client -connect "${uri}:443" -servername "$uri" -timeout 5 2>/dev/null | openssl x509 -noout -subject -issuer -dates 2>/dev/null); then
+      echo "$uri,N/A,N/A,N/A,N/A,N/A"
+      continue
+    fi
 
-    if [ -n "$cert" ]; then
-      subject=$(echo "$cert" | grep '^subject=' | sed 's/^subject=//')
-      issuer=$(echo "$cert" | grep '^issuer=' | sed 's/^issuer=//')
-      not_before=$(echo "$cert" | grep '^notBefore=' | sed 's/^notBefore=//')
-      not_after=$(echo "$cert" | grep '^notAfter=' | sed 's/^notAfter=//')
+    subject=$(echo "$cert_output" | grep '^subject=' | sed 's/^subject=//')
+    issuer=$(echo "$cert_output" | grep '^issuer=' | sed 's/^issuer=//')
+    not_before=$(echo "$cert_output" | grep '^notBefore=' | sed 's/^notBefore=//')
+    not_after=$(echo "$cert_output" | grep '^notAfter=' | sed 's/^notAfter=//')
 
-      if [ "${SHORT:-0}" = "1" ]; then
-        subject=$(cn_only "$subject")
-        issuer=$(cn_only "$issuer")
-      fi
+    if [ "${SHORT:-0}" = "1" ]; then
+      subject=$(cn_only "$subject")
+      issuer=$(cn_only "$issuer")
+    fi
 
-      subject=$(sanitize "$subject")
-      issuer=$(sanitize "$issuer")
-      not_before=$(sanitize "$not_before")
-      not_after=$(sanitize "$not_after")
+    subject=$(sanitize "$subject")
+    issuer=$(sanitize "$issuer")
+    not_before=$(sanitize "$not_before")
+    not_after=$(sanitize "$not_after")
 
-      if [ -n "$not_after" ]; then
-        expiry_epoch=$(date -d "$not_after" +%s 2>/dev/null)
-        now_epoch=$(date +%s)
-        if [ -n "$expiry_epoch" ]; then
-          days_left=$(( (expiry_epoch - now_epoch) / 86400 ))
-        else
-          days_left="N/A"
-        fi
+    if [ -n "$not_after" ]; then
+      expiry_epoch=$(date -d "$not_after" +%s 2>/dev/null || true)
+      now_epoch=$(date +%s)
+      if [ -n "$expiry_epoch" ]; then
+        days_left=$(( (expiry_epoch - now_epoch) / 86400 ))
       else
         days_left="N/A"
       fi
-
-      echo "$uri,$subject,$issuer,$not_before,$not_after,$days_left"
     else
-      echo "$uri,N/A,N/A,N/A,N/A,N/A"
+      days_left="N/A"
     fi
+
+    echo "$uri,$subject,$issuer,$not_before,$not_after,$days_left"
   done
-} > "$2"
+} > "$tmp_output"
 
-sort -u "$2" -o "$2"
+{
+  head -n 1 "$tmp_output"
+  tail -n +2 "$tmp_output" | sort -u
+} > "$output_file"
 
-echo
-echo "Certificate info written to $2"
-echo
+echo "Certificate info written to $output_file"

@@ -1,17 +1,19 @@
 # Baseline
 
-Get subdomain, DNS and certificate info and map the attack surface.
+Collect subdomain, DNS, certificate and HTTP-method exposure data for a target domain.
 
 ## Requirements
 
 1. Linux
-1. `bash`
-1. `openssl`
-1. `subfinder`
+2. `bash`
+3. `openssl`
+4. `subfinder`
+5. `dig`
+6. `curl`
 
 ## Getting Started
 
 1. `git clone` the repo.
-1. `chmod +x main.sh ./src/*.sh`
-1. `./main.sh example.com example`
-1. `column -t -s, ./organisations/example*.csv` to view data nicely in terminal
+2. `chmod +x main.sh ./src/*.sh ./tests/test_validation.sh`
+3. `./main.sh example.com ./out`
+4. `column -t -s, ./out/dns_records.csv` to view DNS data nicely in the terminal

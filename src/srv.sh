@@ -1,27 +1,26 @@
 #!/usr/bin/env bash
 #
-# service.sh - Look up the well-known service name for TCP port(s)
-#              and write results to CSV: ip,port,service
+# srv.sh - Look up the well-known service name for TCP port(s).
+#
+# Purpose:
+#   Tests one or more TCP ports on a raw IPv4 address and reports the matching
+#   service name (when available) alongside the port result.
 #
 # Usage:
-#   ./service.sh -h <ip> -p <ports> -o <output.csv> -t <timeout_seconds>
+#   ./srv.sh -h <ip> -p <ports> -o <output.csv> -t <timeout_seconds>
 #
-# -p accepts:
-#   Range:         -p 1-65535
-#   List:          -p 80,443,445
-#   Single port:   -p 22
-#
-# Example:
-#   ./service.sh -h 8.8.8.8 -p 443 -o output.csv -t 0.5
+# Examples:
+#   ./srv.sh -h 8.8.8.8 -p 443 -o output.csv -t 0.5
+#   ./srv.sh -h 8.8.8.8 -p 80,443,445 -o ./out/services.csv -t 1
 #
 # Notes:
-#   For each port, first attempts a TCP connect within -t seconds (via
-#   /dev/tcp). If the port responds, the IANA-registered service name
-#   (getent services / /etc/services) is reported. If it doesn't, the
-#   service column reports "closed" or "filtered" instead - so you don't
-#   get a service label for something that isn't actually there.
+#   - -h must be a raw IPv4 address; hostnames are not resolved.
+#   - -p accepts a range (1-65535), a list (80,443,445), or a single port (22).
+#   - For each port, the script first attempts a TCP connection within -t seconds.
+#     If the port responds, the IANA-registered service name is reported.
+#     Otherwise, the service column reports "closed" or "filtered".
 
-set -uo pipefail
+set -euo pipefail
 
 HOST=""
 PORTSPEC=""
@@ -33,6 +32,15 @@ usage() {
     echo "  -h must be a raw IPv4 address (no hostname resolution)" >&2
     echo "  -p accepts a range (1-65535), a list (80,443,445), or a single port (22)" >&2
     exit 2
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 2
+}
+
+require_cmd() {
+    command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
 }
 
 while getopts ":h:p:o:t:" opt; do
@@ -56,6 +64,8 @@ if ! [[ "$TIMEOUT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     echo "Error: -t must be a positive number (seconds)" >&2
     exit 2
 fi
+
+require_cmd timeout
 
 # --- Validate -h is a raw IPv4 address (no hostname resolution) -------------
 if ! [[ "$HOST" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
@@ -124,7 +134,13 @@ lookup_service() {
 
 IP="$HOST"
 
-echo "ip,port,service" > "$OUTFILE"
+output_dir="$(dirname -- "$OUTFILE")"
+mkdir -p -- "$output_dir" || die "Unable to create output directory: $output_dir"
+
+tmp_output="$(mktemp "${TMPDIR:-/tmp}/service-scan.XXXXXX")"
+trap 'rm -f -- "$tmp_output"' EXIT
+
+echo "ip,port,service" > "$tmp_output"
 
 for port in "${PORTS[@]}"; do
     err=$(timeout "$TIMEOUT" bash -c "exec 3<>/dev/tcp/${IP}/${port}" 2>&1)
@@ -145,8 +161,10 @@ for port in "${PORTS[@]}"; do
         fi
     fi
 
-    echo "$IP,$port,$svc" | tee -a "$OUTFILE"
+    echo "$IP,$port,$svc" >> "$tmp_output"
 done
+
+mv "$tmp_output" "$OUTFILE"
 
 echo
 echo "[*] Done. Results saved to: $OUTFILE"

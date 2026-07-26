@@ -21,3 +21,5 @@ jobs:
         uses: actions/checkout@v7.0.1
       - name: Lint shell code
         run: shellcheck ./**/*.sh
+      - name: Run regression checks
+        run: bash tests/test_validation.sh

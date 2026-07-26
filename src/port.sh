@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 #
-# port.sh - Scan TCP port(s) on a host using bash's /dev/tcp technique
-#           and write results to CSV: subdomain,ip,port,status
+# port.sh - Scan TCP port(s) on a host using bash's /dev/tcp technique.
+#
+# Purpose:
+#   Tests one or more TCP ports on a raw IPv4 address and writes the outcome
+#   (open, closed, or filtered) to CSV.
 #
 # Usage:
 #   ./port.sh -h <ip> -p <ports> -o <output.csv> -t <timeout_seconds>
 #
-# -h must be a raw IPv4 address (hostnames are not resolved)
-#
-# -p accepts:
-#   Range:         -p 1-65535
-#   List:          -p 80,443,445
-#   Single port:   -p 22
-#
-# Example:
+# Examples:
 #   ./port.sh -h 8.8.8.8 -p 80 -o output.csv -t 0.5
+#   ./port.sh -h 8.8.8.8 -p 80,443,445 -o ./out/ports.csv -t 1
 #
-# Status values written to CSV:
-#   open      - connection succeeded
-#   closed    - connection actively refused (RST) before timeout
-#   filtered  - no response within timeout (likely dropped by firewall/ACL)
+# Notes:
+#   - -h must be a raw IPv4 address; hostnames are not resolved.
+#   - -p accepts a range (1-65535), a list (80,443,445), or a single port (22).
+#   - Status values written to CSV:
+#       open      - connection succeeded
+#       closed    - connection actively refused (RST) before timeout
+#       filtered  - no response within timeout (likely dropped by firewall/ACL)
 
-set -uo pipefail
+set -euo pipefail
 
 HOST=""
 PORTSPEC=""
@@ -33,6 +33,15 @@ usage() {
     echo "  -h must be a raw IPv4 address (no hostname resolution)" >&2
     echo "  -p accepts a range (1-65535), a list (80,443,445), or a single port (22)" >&2
     exit 2
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 2
+}
+
+require_cmd() {
+    command -v "$1" >/dev/null 2>&1 || die "Required command not found: $1"
 }
 
 while getopts ":h:p:o:t:" opt; do
@@ -56,6 +65,8 @@ if ! [[ "$TIMEOUT" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     echo "Error: -t must be a positive number (seconds)" >&2
     exit 2
 fi
+
+require_cmd timeout
 
 # --- Parse -p into an array of ports ---------------------------------------
 PORTS=()
@@ -107,7 +118,13 @@ done
 
 IP="$HOST"
 
-echo "ip,port,status" > "$OUTFILE"
+output_dir="$(dirname -- "$OUTFILE")"
+mkdir -p -- "$output_dir" || die "Unable to create output directory: $output_dir"
+
+tmp_output="$(mktemp "${TMPDIR:-/tmp}/portscan.XXXXXX")"
+trap 'rm -f -- "$tmp_output"' EXIT
+
+echo "ip,port,status" > "$tmp_output"
 
 for port in "${PORTS[@]}"; do
     err=$(timeout "$TIMEOUT" bash -c "exec 3<>/dev/tcp/${IP}/${port}" 2>&1)
@@ -128,8 +145,10 @@ for port in "${PORTS[@]}"; do
         fi
     fi
 
-    echo "$IP,$port,$status" | tee -a "$OUTFILE"
+    echo "$IP,$port,$status" >> "$tmp_output"
 done
+
+mv "$tmp_output" "$OUTFILE"
 
 echo
 echo "[*] Done. Results saved to: $OUTFILE"
