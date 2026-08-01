@@ -37,15 +37,15 @@ else
 fi
 
 {
-  echo "URI,TTL,DNS Record,DNS Value"
+  echo "URI,DNS Record,DNS Value"
   for raw_uri in "${uris[@]}"; do
     uri=$(clean_uri "$raw_uri")
     for rtype in A AAAA CNAME MX TXT NS SOA; do
-      dig +noall +answer "$rtype" "$uri" | while read -r _ ttl _ rtype_col val; do
+      dig +noall +answer "$rtype" "$uri" | while read -r _ _ _ rtype_col val; do
         if [ -n "$val" ]; then
           case "$val" in
-            *,*) echo "$uri,$ttl,$rtype_col,\"$val\"" ;;
-            *)   echo "$uri,$ttl,$rtype_col,$val" ;;
+            *,*) echo "$uri,$rtype_col,\"$val\"" ;;
+            *)   echo "$uri,$rtype_col,$val" ;;
           esac
         fi
       done
@@ -53,7 +53,7 @@ fi
   done
 } > "$2"
 
-sort -u "$2" -o "$2"
+{ head -n 1 "$2"; tail -n +2 "$2" | sort -u; } > "$2.tmp" && mv "$2.tmp" "$2"
 
 echo
 echo "DNS results written to $2"
