@@ -28,6 +28,7 @@ jobs:
           sudo apt update
           sudo apt install openssl
           chmod +x ./src/*.sh ./main.sh
+          ./main.sh acquisory.com ./targets/acquisory.com
           ./main.sh asyncawake.studio ./targets/asyncawakestudio
           ./main.sh ayushmanchhabra.com ./targets/ayushmanchhabra
           ./main.sh vaultfol.io ./targets/vaultfolio
