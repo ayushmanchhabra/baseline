@@ -1,0 +1,29 @@
+URI,DNS Record,DNS Value
+acquisory.com,A,170.178.144.136
+acquisory.com,MX,0 acquisory-com.mail.protection.outlook.com.
+acquisory.com,NS,ns1.chinetworks.com.
+acquisory.com,NS,ns2.chinetworks.com.
+acquisory.com,SOA,ns1.chinetworks.com. support.chinetworks.com. 2025120100 10800 3600 86400 3600
+acquisory.com,TXT,"MS=ms25742507"
+acquisory.com,TXT,"google-site-verification=_mrE5j-E6TzVvTVDCZ19VeMhhadKvFfOtqVHQ29JO7w"
+acquisory.com,TXT,"v=spf1 include:spf.protection.outlook.com -all"
+contact-management.acquisory.com,A,170.178.144.136
+webmail.acquisory.com,A,40.104.189.82
+webmail.acquisory.com,A,40.104.231.50
+webmail.acquisory.com,A,40.104.242.210
+webmail.acquisory.com,A,52.96.119.162
+webmail.acquisory.com,A,52.96.183.2
+webmail.acquisory.com,A,52.96.228.226
+webmail.acquisory.com,A,52.96.230.2
+webmail.acquisory.com,A,52.96.69.98
+webmail.acquisory.com,AAAA,2603:1036:301:3038::2
+webmail.acquisory.com,AAAA,2603:1036:301:30a4::2
+webmail.acquisory.com,AAAA,2603:1036:5:44c::2
+webmail.acquisory.com,AAAA,2603:1036:5:8e::2
+webmail.acquisory.com,CNAME,DSM-efz.ms-acdc.office.com.
+webmail.acquisory.com,CNAME,acdcatm.outlook.mira.tm.svc.cloud.microsoft.
+webmail.acquisory.com,CNAME,atm.outlook.mira.tm.svc.cloud.microsoft.
+webmail.acquisory.com,CNAME,mail.office365.com.
+webmail.acquisory.com,CNAME,outlook.cloud.microsoft.
+webmail.acquisory.com,CNAME,outlook.ms-acdc.office.com.
+webmail.acquisory.com,CNAME,outlook.office365.com.
