@@ -7,9 +7,9 @@ asyncawake.studio,MX,10 mail.protonmail.ch.
 asyncawake.studio,MX,20 mailsec.protonmail.ch.
 asyncawake.studio,NS,dns1.registrar-servers.com.
 asyncawake.studio,NS,dns2.registrar-servers.com.
-asyncawake.studio,SOA,dns1.registrar-servers.com. hostmaster.registrar-servers.com. 1786333789 43200 3600 604800 3601
+asyncawake.studio,SOA,dns1.registrar-servers.com. hostmaster.registrar-servers.com. 1786753787 43200 3600 604800 3601
 asyncawake.studio,TXT,"protonmail-verification=8bcb5897afd53bd6b1ef0fa0aec92c49874c50bc"
 asyncawake.studio,TXT,"v=spf1 include:_spf.protonmail.ch ~all"
-verify.asyncawake.studio,A,216.150.1.1
-verify.asyncawake.studio,A,216.150.16.1
+verify.asyncawake.studio,A,216.150.1.193
+verify.asyncawake.studio,A,216.150.16.193
 verify.asyncawake.studio,CNAME,55d103eefacb975a.vercel-dns-017.com.
