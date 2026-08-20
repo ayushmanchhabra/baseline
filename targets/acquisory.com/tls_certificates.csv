@@ -1,4 +1,2 @@
 URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry
-acquisory.com,CN = www.acquisory.com,C = GB; O = Sectigo Limited; CN = Sectigo Public Server Authentication CA DV R36,Dec 1 00:00:00 2025 GMT,Dec 3 23:59:59 2026 GMT,106
-contact-management.acquisory.com,N/A,N/A,N/A,N/A,N/A
-webmail.acquisory.com,C = US; ST = Washington; L = Redmond; O = Microsoft Corporation; CN = outlook.com,C = US; O = DigiCert Inc; CN = DigiCert Global G2 TLS RSA SHA256 2020 CA1,Jun 26 00:00:00 2026 GMT,Jan 10 23:59:59 2027 GMT,144
+acquisory.com,CN = www.acquisory.com,C = GB; O = Sectigo Limited; CN = Sectigo Public Server Authentication CA DV R36,Dec 1 00:00:00 2025 GMT,Dec 3 23:59:59 2026 GMT,105

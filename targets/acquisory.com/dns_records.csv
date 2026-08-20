@@ -7,18 +7,3 @@ acquisory.com,SOA,ns1.chinetworks.com. support.chinetworks.com. 2025120100 10800
 acquisory.com,TXT,"MS=ms25742507"
 acquisory.com,TXT,"google-site-verification=_mrE5j-E6TzVvTVDCZ19VeMhhadKvFfOtqVHQ29JO7w"
 acquisory.com,TXT,"v=spf1 include:spf.protection.outlook.com -all"
-contact-management.acquisory.com,A,170.178.144.136
-webmail.acquisory.com,A,52.96.164.242
-webmail.acquisory.com,A,52.96.166.34
-webmail.acquisory.com,A,52.96.223.50
-webmail.acquisory.com,A,52.96.91.50
-webmail.acquisory.com,AAAA,2603:1036:308:281c::2
-webmail.acquisory.com,AAAA,2603:1036:308:2822::2
-webmail.acquisory.com,AAAA,2603:1036:308:2827::2
-webmail.acquisory.com,AAAA,2603:1036:308:282b::2
-webmail.acquisory.com,CNAME,EAT-efz.ms-acdc.office.com.
-webmail.acquisory.com,CNAME,acdcatm.outlook.mira.tm.svc.cloud.microsoft.
-webmail.acquisory.com,CNAME,mail.office365.com.
-webmail.acquisory.com,CNAME,outlook.cloud.microsoft.
-webmail.acquisory.com,CNAME,outlook.ms-acdc.office.com.
-webmail.acquisory.com,CNAME,outlook.office365.com.
