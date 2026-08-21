@@ -7,3 +7,25 @@ acquisory.com,SOA,ns1.chinetworks.com. support.chinetworks.com. 2025120100 10800
 acquisory.com,TXT,"MS=ms25742507"
 acquisory.com,TXT,"google-site-verification=_mrE5j-E6TzVvTVDCZ19VeMhhadKvFfOtqVHQ29JO7w"
 acquisory.com,TXT,"v=spf1 include:spf.protection.outlook.com -all"
+contact-management.acquisory.com,A,170.178.144.136
+webmail.acquisory.com,A,52.96.165.146
+webmail.acquisory.com,A,52.96.165.242
+webmail.acquisory.com,A,52.96.165.34
+webmail.acquisory.com,A,52.96.172.114
+webmail.acquisory.com,A,52.96.181.242
+webmail.acquisory.com,A,52.96.182.18
+webmail.acquisory.com,A,52.96.184.34
+webmail.acquisory.com,A,52.96.184.50
+webmail.acquisory.com,AAAA,2603:1036:303:3801::2
+webmail.acquisory.com,AAAA,2603:1036:303:3805::2
+webmail.acquisory.com,AAAA,2603:1036:303:3808::2
+webmail.acquisory.com,AAAA,2603:1036:303:380a::2
+webmail.acquisory.com,AAAA,2603:1036:303:3c09::2
+webmail.acquisory.com,AAAA,2603:1036:303:3c1d::2
+webmail.acquisory.com,AAAA,2603:1036:303:3c32::2
+webmail.acquisory.com,AAAA,2603:1036:303:7::2
+webmail.acquisory.com,CNAME,acdcatm.outlook.mira.tm.svc.cloud.microsoft.
+webmail.acquisory.com,CNAME,atm.outlook.mira.tm.svc.cloud.microsoft.
+webmail.acquisory.com,CNAME,mail.office365.com.
+webmail.acquisory.com,CNAME,outlook.cloud.microsoft.
+webmail.acquisory.com,CNAME,outlook.office365.com.
