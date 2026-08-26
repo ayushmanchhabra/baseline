@@ -8,15 +8,15 @@ acquisory.com,TXT,"MS=ms25742507"
 acquisory.com,TXT,"google-site-verification=_mrE5j-E6TzVvTVDCZ19VeMhhadKvFfOtqVHQ29JO7w"
 acquisory.com,TXT,"v=spf1 include:spf.protection.outlook.com -all"
 contact-management.acquisory.com,A,170.178.144.136
-webmail.acquisory.com,A,52.96.122.82
-webmail.acquisory.com,A,52.96.165.130
-webmail.acquisory.com,A,52.96.173.226
-webmail.acquisory.com,A,52.96.189.34
-webmail.acquisory.com,AAAA,2603:1036:303:3800::2
-webmail.acquisory.com,AAAA,2603:1036:303:3802::2
-webmail.acquisory.com,AAAA,2603:1036:303:3c16::2
-webmail.acquisory.com,AAAA,2603:1036:303:3c1b::2
-webmail.acquisory.com,CNAME,LYH-efz.ms-acdc.office.com.
+webmail.acquisory.com,A,52.96.165.194
+webmail.acquisory.com,A,52.96.165.226
+webmail.acquisory.com,A,52.96.181.98
+webmail.acquisory.com,A,52.96.97.130
+webmail.acquisory.com,AAAA,2603:1036:302:4843::2
+webmail.acquisory.com,AAAA,2603:1036:302:4845::2
+webmail.acquisory.com,AAAA,2603:1036:302:5062::2
+webmail.acquisory.com,AAAA,2603:1036:303:3c01::2
+webmail.acquisory.com,CNAME,MNZ-efz.ms-acdc.office.com.
 webmail.acquisory.com,CNAME,acdcatm.outlook.mira.tm.svc.cloud.microsoft.
 webmail.acquisory.com,CNAME,mail.office365.com.
 webmail.acquisory.com,CNAME,outlook.cloud.microsoft.
