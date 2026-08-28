@@ -1,7 +1,7 @@
 URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry
 api.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
-asyncawake.studio,CN = asyncawake.studio,C = US; O = Let's Encrypt; CN = YR1,Aug 21 07:06:49 2026 GMT,Nov 19 07:06:48 2026 GMT,84
+asyncawake.studio,CN = asyncawake.studio,C = US; O = Let's Encrypt; CN = YR1,Aug 21 07:06:49 2026 GMT,Nov 19 07:06:48 2026 GMT,82
 sftp.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
 todo.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
-verify.asyncawake.studio,CN = verify.asyncawake.studio,C = US; O = Let's Encrypt; CN = YR1,Jul 27 07:07:15 2026 GMT,Oct 25 07:07:14 2026 GMT,59
+verify.asyncawake.studio,CN = verify.asyncawake.studio,C = US; O = Let's Encrypt; CN = YR1,Jul 27 07:07:15 2026 GMT,Oct 25 07:07:14 2026 GMT,57
 zk.asyncawake.studio,N/A,N/A,N/A,N/A,N/A
