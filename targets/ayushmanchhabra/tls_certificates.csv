@@ -1,6 +1,5 @@
 URI,Cert Subject,Cert Issuer,Not Before,Not After,Days Until Expiry
-ayushmanchhabra.com,CN = ayushmanchhabra.com,C = US; O = Let's Encrypt; CN = YR2,Aug 18 05:33:21 2026 GMT,Nov 16 05:33:20 2026 GMT,77
+ayushmanchhabra.com,CN = ayushmanchhabra.com,C = US; O = Let's Encrypt; CN = YR2,Aug 18 05:33:21 2026 GMT,Nov 16 05:33:20 2026 GMT,76
 notes.ayushmanchhabra.com,N/A,N/A,N/A,N/A,N/A
-ottermap-task.ayushmanchhabra.com,N/A,N/A,N/A,N/A,N/A
 resume.ayushmanchhabra.com,N/A,N/A,N/A,N/A,N/A
 tmg.ayushmanchhabra.com,N/A,N/A,N/A,N/A,N/A
